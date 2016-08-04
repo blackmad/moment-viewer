@@ -1,0 +1,11 @@
+{
+  "name": "node-lewitt-bots",
+  "main": "bot.js",
+  "dependencies" : {
+            "express": "~4.0.0",
+    "twitter": "latest",
+    "twit" : "latest",
+    "underscore-node" : "latest",
+    "mustache": "latest"
+  }
+}

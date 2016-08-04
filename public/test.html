@@ -1,0 +1,156 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>React Tutorial</title>
+    <script src="https://npmcdn.com/react@15.3.0/dist/react.js"></script>
+    <script src="https://npmcdn.com/react-dom@15.3.0/dist/react-dom.js"></script>
+    <script src="https://npmcdn.com/babel-core@5.8.38/browser.min.js"></script>
+    <script src="https://npmcdn.com/jquery@3.1.0/dist/jquery.min.js"></script>
+    <script src="https://npmcdn.com/remarkable@1.6.2/dist/remarkable.min.js"></script>
+
+    <style>
+@font-face {
+ font-family: 'Gothamy';
+ src: local('Gotham Book'), local('Gotham-Book');
+ font-weight: normal;
+ font-style: normal;
+ font-variant: normal;
+}
+@font-face {
+ font-family: 'Gothamy';
+ src: local('Gotham Bold'), local('Gotham-Bold');
+ font-weight: bold;
+ font-style: normal;
+ font-variant: normal;
+}
+@font-face {
+ font-family: 'Gothamy';
+ src: local('Gotham Book Italic'), local('Gotham-BookItalic');
+ font-weight: normal;
+ font-style: italic;
+ font-variant: normal;
+}
+@font-face {
+ font-family: 'Gothamy';
+ src: local('Gotham Bold Italic'), local('Gotham-BoldItalic');
+ font-weight: bold;
+ font-style: italic;
+ font-variant: normal;
+}
+body {
+ font-family: Gothamy, Gotham-Book, Arial, sans-serif;
+ margin: 0;
+ background-color: #292F33;
+}
+
+.image.page {
+  color: white;
+}
+
+.textOverlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    height: 100vh;
+    z-index: 20;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.video.page {
+  color: white;
+}
+
+.video_contain {
+    position: relative;
+    height: 100vh;
+    z-index: 0;
+}
+.video_contain video {
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    -moz-transform: translateX(-50%) translateY(-50%);
+    -ms-transform: translateX(-50%) translateY(-50%);
+    -o-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -100;
+}
+
+
+.bgVideo:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-image: linear-gradient(to bottom,rgba(0,0,0,0),#000000);
+        opacity: .8; 
+        z-index: 20;
+      }
+
+      .bgImage:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-image: linear-gradient(to bottom,rgba(0,0,0,0),#000000);
+        opacity: .8; 
+      }
+
+  .image.page textOverlay {
+    height: 100vh;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+      .text.page {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        flex-direction: column;
+        padding: 20px;
+
+        /* this is slightly wrong */
+        height: 100vh;
+
+      }
+
+      .text.page .topModule {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        width: 100%;
+        padding: 10px;
+      }
+
+      .text.page .nameBlock {
+        padding-left: 10px;
+      }
+
+      .text.page .screenName {
+        font-size: 90%;
+        color: gray;
+
+
+    </style>
+  </head>
+  <body>
+    <div id="content"></div>
+    <script type="text/babel" src="MomentRenderer.js"></script>
+    <script type="text/babel" src="MomentDriver.js"></script>
+  </body>
+</html>
