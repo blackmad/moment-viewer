@@ -1,6 +1,4 @@
 // TODO
-// render image pages
-// render video pages
 // render covers
 // obey image/video crops
 // pivot to another moment
@@ -28,18 +26,20 @@ var MomentRenderer = React.createClass({
       backgroundPosition: 'center',
       backgroundSize: 'cover'
     }
+    var isCover = this.props['isCover']
 
     return (
       <div className="image page">
         <div className="bgImage" style={divStyle}>
         </div>
-        {this.buildTextOverlay(page)}
+        {this.buildTextOverlay(page, isCover)}
       </div>
     );
   },
 
   renderVideoPage: function(page) {
     var media = page['media']['url'];
+    var isCover = this.props['isCover']
     console.log(page['render'])
 
     return (
@@ -49,12 +49,37 @@ var MomentRenderer = React.createClass({
             <source src={media} type="video/mp4"/>
           </video>
         </div>
-        {this.buildTextOverlay(page)}
+        {this.buildTextOverlay(page, isCover)}
       </div>
     );
   },
 
-  buildTextOverlay: function(page) {
+  buildCoverPageOverlay: function(page) {
+    var description = this.props.moment['description']
+    var title = this.props.moment['title']
+    var time_string = this.props.moment['time_string']
+
+    var tweet = this.props.tweets[page['tweet_id']]
+    var screen_name = tweet['user']['screen_name']
+
+    return (        
+      <div className="coverTextOverlay">
+        <div className="textModule">
+          <div className="timeString">{time_string}</div>
+          <div className="title">{title}</div>
+          <div className="descriptionBlock">
+            <span className="description">{description}</span>
+            <span className="nameBlock">
+              <span className="mediaBy">Media by</span>
+              <span className="screenName">@{screen_name}</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    )
+  },
+
+  buildTextPageOverlay: function(page) {
     var tweet = this.props.tweets[page['tweet_id']]
     var user_name = tweet['user']['name']
     var screen_name = tweet['user']['screen_name']
@@ -65,13 +90,21 @@ var MomentRenderer = React.createClass({
             <div className="topModule">
               <div className="nameBlock">
                 <div className="userName">{user_name}</div>
-                <div className="screenName">{screen_name}</div>
+                <div className="screenName">@{screen_name}</div>
               </div>
               <div className="verified {verified}"></div>
             </div>
             <div className="text">{tweet.text}</div>
           </div>
         </div>)
+  },
+
+  buildTextOverlay: function(page, isCover) {
+    if (isCover) {
+      return this.buildCoverPageOverlay(page);
+    } else {
+      return this.buildTextPageOverlay(page);
+    }
   },
 
   renderTextPage: function(page) {
@@ -128,15 +161,20 @@ var MomentDriver = React.createClass({
   },
 
   componentDidMount: function() {
-    this.serverRequest = $.get(this.props.source, function (result) {
+    var rpc = '/api/capsule/' + this.props.initialId;
+    if (!this.state.isFirstLoad && this.props.shouldAdvance) {
+       rpc = '/api/capsule/random'
+    }
+    this.serverRequest = $.get(rpc, function (result) {
       console.log(result);
       this.setState({
+        isFirstLoad: !this.state.isFirstLoad,
         currentMoment: result,
         currentPage: result['cover_format'],
         isCover: true,
         page: -1
       });
-      this.timer = setInterval(this.advancePage, 1000);
+      this.timer = setInterval(this.advancePage, this.props.timeout);
     }.bind(this));
   },
 
@@ -164,12 +202,32 @@ var MomentDriver = React.createClass({
 
   render: function() {
     return (
-      <MomentRenderer users={this.state.currentMoment['users']}  tweets={this.state.currentMoment['tweets']} page={this.state.currentPage} isCover={this.state.isCover}/>
+      <MomentRenderer moment={this.state.currentMoment['moment']} users={this.state.currentMoment['users']}  tweets={this.state.currentMoment['tweets']} page={this.state.currentPage} isCover={this.state.isCover}/>
     );
   }
 });
 
+function parseParams(query) {
+  var result = {};
+  query.split("&").forEach(function(part) {
+    var item = part.split("=");
+    result[item[0]] = decodeURIComponent(item[1]);
+  });
+  return result;
+}
+
+var hash = window.location.hash.substring(1);
+var params = parseParams(hash)
+
+var id = params['id']
+if (!id) {
+  id = 'random';
+}
+var shouldAdvance = params['shouldAdvance'] != 'false' || params['shouldAdvance'] != '0'
+var timeout = parseInt(params['timeout'] || '60000')
+
+console.log('id: ' + id)
 ReactDOM.render(
-  <MomentDriver source="/api/capsule/random" />,
+  <MomentDriver initialId={id} shouldAdvance={shouldAdvance} timeout={timeout}/>,
   document.getElementById('content')
 );

@@ -32,15 +32,34 @@ router.get('/capsule/random', function(req, res) {
   client.get('moments/guide', params, function(error, guide, response) {
     // console.log(guide['modules'])
     var ids = _.flatten(_.map(guide['modules'], function(module) {
-      console.log(module['moments'])
+      // console.log(module['moments'])
       return _.map(module['moments'], function(moment) { return moment['moment']['id']; })
     }))
-    console.log(ids)
+    // console.log(ids)
     var id = _.sample(ids)
     // id = '761195021462806529'
 
     client.get('moments/capsule/' + id, params, function(error, capsule, response) {
-      res.json(capsule)
+      var pageTweetIds = _.map(capsule['pages'], function(p) { return p['tweet_id']});
+      var hydratedTweetIds = Object.keys(capsule['tweets'])
+      var needHydrationIds = _.difference(pageTweetIds, hydratedTweetIds)
+      if (needHydrationIds.length > 0) {
+        var lookupParams = {
+          id: needHydrationIds.join(','),
+          include_cards: 1,
+          cards_platform: 'iPhone-12',
+        }
+        console.log(lookupParams)
+
+        client.get('statuses/lookup', lookupParams, function(error, tweets, response) {
+          _.each(tweets, function(tweet) {
+            capsule['tweets'][tweet['id_str']] = tweet;
+          });
+          res.json(capsule)
+        })
+      } else {
+        res.json(capsule)
+      }
     });
   });
 });
