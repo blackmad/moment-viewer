@@ -137,8 +137,6 @@ var MomentRenderer = React.createClass({
       return (<div>waiting...</div>)
     }
 
-    return this.renderTextPage(page);
-
     console.log(page['type'])
     if (page['type'] == 'image') {
       return this.renderImagePage(page);
