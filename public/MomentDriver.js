@@ -115,15 +115,17 @@ var MomentRenderer = React.createClass({
     var verified = tweet['user']['verified']
     return (
       <div className="text page">
-        <div className="topModule">
-          <div className="userAvatar"><img src={user_avatar}/></div>
-          <div className="nameBlock">
-            <div className="userName">{user_name}</div>
-            <div className="screenName">@{screen_name}</div>
+        <div className="contentBox">
+          <div className="topModule">
+            <div className="userAvatar"><img src={user_avatar}/></div>
+            <div className="nameBlock">
+              <div className="userName">{user_name}</div>
+              <div className="screenName">@{screen_name}</div>
+            </div>
+            <div className="verified {verified}"></div>
           </div>
-          <div className="verified {verified}"></div>
+          <div className="text">{tweet.text}</div>
         </div>
-        <div className="text">{tweet.text}</div>
       </div>
     );
   },
@@ -134,6 +136,8 @@ var MomentRenderer = React.createClass({
     if (!page) {
       return (<div>waiting...</div>)
     }
+
+    return this.renderTextPage(page);
 
     console.log(page['type'])
     if (page['type'] == 'image') {
