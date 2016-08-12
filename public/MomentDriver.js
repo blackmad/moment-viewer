@@ -155,6 +155,22 @@ var MomentRenderer = React.createClass({
 
     var verifiedClassNames = 'verified ' + verified
 
+    var divStyle = {}
+    if (page['render'] && page['render']['theme']) {
+      var fg = page['render']['theme']['fg']
+      var red_fg = (fg >> 16) & 0xff
+      var green_fg = (fg >> 8) & 0xff
+      var blue_fg = fg & 0xff
+      var bg = page['render']['theme']['bg']
+      var red_bg = (bg >> 16) & 0xff
+      var green_bg = (bg >> 8) & 0xff
+      var blue_bg = bg & 0xff
+      divStyle = {
+        color: 'rgb(' + red_fg + ',' + green_fg + ',' + blue_fg + ')',
+        backgroundColor: 'rgb(' + red_bg + ',' + green_bg + ',' + blue_bg + ')'
+      }
+    }
+
     function buildQuoteTweet() {
       if (tweet['is_quote_status']) {
         var quote_tweet = tweet['quoted_status']
@@ -167,7 +183,7 @@ var MomentRenderer = React.createClass({
     }
 
     return (
-      <div className="text page">
+      <div className="text page" style={divStyle}>
         <div className="contentBox">
           <div className="topModule">
             <div className="userAvatar"><img src={user_avatar}/></div>
