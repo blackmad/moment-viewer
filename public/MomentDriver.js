@@ -6,8 +6,8 @@
 var MomentRenderer = React.createClass({
   renderImagePage: function(page) {
     var imgStyle = {}
-    if (page['render'] && 
-        page['render']['crops'] && 
+    if (page['render'] &&
+        page['render']['crops'] &&
         page['render']['crops']['portrait_9_16']) {
       var crop = page['render']['crops']['portrait_9_16']
       imgStyle = {
@@ -62,7 +62,7 @@ var MomentRenderer = React.createClass({
     var tweet = this.props.tweets[page['tweet_id']]
     var screen_name = tweet['user']['screen_name']
 
-    return (        
+    return (
       <div className="coverTextOverlay">
         <div className="coverTextModule">
           <div className="timeString">{time_string}</div>
@@ -81,7 +81,7 @@ var MomentRenderer = React.createClass({
 
   formatCount: function(n) {
     if (n > 10000) {
-      return n / 1000 + 'K'
+      return Math.round(n / 1000) + 'K'
     } else {
       return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
@@ -92,7 +92,7 @@ var MomentRenderer = React.createClass({
     var favorite_count = this.formatCount(tweet['favorite_count'])
     var retweet_count = this.formatCount(tweet['retweet_count'])
 
-    return (        
+    return (
       <div className="engagementOverlay">
         <div className="iconTextBox">
           <div className="favoriteBox">
@@ -119,7 +119,7 @@ var MomentRenderer = React.createClass({
 
     var verifiedClassNames = 'verified ' + verified
 
-    return (        
+    return (
       <div className="overlay">
         <div className="textOverlay">
           <div className="textModule">
@@ -158,11 +158,11 @@ var MomentRenderer = React.createClass({
     function buildQuoteTweet() {
       if (tweet['is_quote_status']) {
         var quote_tweet = tweet['quoted_status']
-        (<div>
-          
+        return (<div>
+
         </div>)
       } else {
-        return ()
+        return (<div></div>)
       }
     }
 
