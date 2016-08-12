@@ -155,6 +155,17 @@ var MomentRenderer = React.createClass({
 
     var verifiedClassNames = 'verified ' + verified
 
+    function buildQuoteTweet() {
+      if (tweet['is_quote_status']) {
+        var quote_tweet = tweet['quoted_status']
+        (<div>
+          
+        </div>)
+      } else {
+        return ()
+      }
+    }
+
     return (
       <div className="text page">
         <div className="contentBox">
@@ -169,6 +180,7 @@ var MomentRenderer = React.createClass({
             </div>
           </div>
           <div className="text">{tweet.text}</div>
+          {buildQuoteTweet()}
         </div>
         {this.buildEngagementOverlay(page)}
       </div>
