@@ -79,20 +79,44 @@ var MomentRenderer = React.createClass({
     )
   },
 
+  buildEngagementOverlay: function(page) {
+    var tweet = this.props.tweets[page['tweet_id']]
+    var favorite_count = tweet['favorite_count']
+    var retweet_count = tweet['retweet_count']
+
+    return (        
+      <div className="engagementOverlay">
+        <div>
+          <div className="favoriteBox">
+            <div className="favoriteIcon"></div>
+          </div>
+          <div>{favorite_count}</div>
+        </div>
+        <div>
+          <div className="retweet_icon"></div>
+          <div>{retweet_count}</div>
+        </div>
+      </div>
+    )
+  },
+
   buildTextPageOverlay: function(page) {
     var tweet = this.props.tweets[page['tweet_id']]
+    console.log(tweet);
     var user_name = tweet['user']['name']
     var screen_name = tweet['user']['screen_name']
     var verified = tweet['user']['verified']
+
+    var verifiedClassNames = 'verified ' + verified
 
     return (        <div className="textOverlay">
           <div className="textModule">
             <div className="topModule">
               <div className="nameBlock">
                 <div className="userName">{user_name}</div>
+                <div className={verifiedClassNames}></div>
                 <div className="screenName">@{screen_name}</div>
               </div>
-              <div className="verified {verified}"></div>
             </div>
             <div className="text">{tweet.text}</div>
           </div>
@@ -113,19 +137,25 @@ var MomentRenderer = React.createClass({
     var user_name = tweet['user']['name']
     var screen_name = tweet['user']['screen_name']
     var verified = tweet['user']['verified']
+
+    var verifiedClassNames = 'verified ' + verified
+
     return (
       <div className="text page">
         <div className="contentBox">
           <div className="topModule">
             <div className="userAvatar"><img src={user_avatar}/></div>
             <div className="nameBlock">
-              <div className="userName">{user_name}</div>
+              <div className="line1">
+                <div className="userName">{user_name}</div>
+                <div className={verifiedClassNames}></div>
+              </div>
               <div className="screenName">@{screen_name}</div>
             </div>
-            <div className="verified {verified}"></div>
           </div>
           <div className="text">{tweet.text}</div>
         </div>
+        {this.buildEngagementOverlay(page)}
       </div>
     );
   },
@@ -155,6 +185,7 @@ var MomentRenderer = React.createClass({
 var MomentDriver = React.createClass({
   getInitialState: function() {
     return {
+      isFirstLoad: true,
       currentMoment: {
         tweets: [],
         cover_format: {}
@@ -163,6 +194,7 @@ var MomentDriver = React.createClass({
   },
 
   componentDidMount: function() {
+    document.body.onkeydown = this.keyDownHandler;
     var rpc = '/api/capsule/' + this.props.initialId;
     if (!this.state.isFirstLoad && this.props.shouldAdvance) {
        rpc = '/api/capsule/random'
@@ -185,7 +217,18 @@ var MomentDriver = React.createClass({
   },
 
   advancePage: function() {
-    var page = this.state.page + 1;
+    this.movePage(1)
+  },
+
+  prevPage: function() {
+    this.movePage(-1)
+  },
+
+  movePage: function(incr) {
+    if (page == -1 && incr < 0) {
+      incr = 0;
+    }
+    var page = this.state.page + incr;
     console.log('advancing to page ' + page + ' of '+ this.state.currentMoment['pages'].length);
 
     if (page >= this.state.currentMoment['pages'].length) {
@@ -193,12 +236,28 @@ var MomentDriver = React.createClass({
       window.clearInterval(this.timer)
       this.componentDidMount();
     } else {
+      var currentPage = this.state.currentMoment['pages'][page];
+      var isCover = page == -1;
+      if (isCover) {
+        currentPage = result['cover_format']
+      }
       this.setState({
         currentMoment: this.state.currentMoment,
-        currentPage: this.state.currentMoment['pages'][page],
-        isCover: false,
+        currentPage: currentPage,
+        isCover: isCover,
         page: page
       });
+    }
+  },
+
+  keyDownHandler: function(e) {
+    console.log(e)
+    if (e.keyCode == 37) { // left
+      console.log('left');
+      this.prevPage();
+    } else if (e.keyCode == 39) { // right
+      console.log('right')
+      this.advancePage()
     }
   },
 
@@ -218,7 +277,7 @@ function parseParams(query) {
   return result;
 }
 
-var hash = window.location.hash.substring(1);
+var hash = window.location.hash.substring(1) ||  window.location.search.substring(1);
 var params = parseParams(hash)
 
 var id = params['id']

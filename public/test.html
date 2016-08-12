@@ -171,11 +171,9 @@ body {
         height: 6vh;
       }
 
-
       .text.page .nameBlock {
-        padding-left: 4%;
+        padding-left: 2%;
       }
-
       .text.page .screenName {
         font-size: 90%;
         color: gray;
@@ -203,6 +201,68 @@ body {
       .image.page .screenName, .video.page .screenName {
         padding-left: 5px;
         color: grey;
+      }
+
+      .text.page  .verified.true  {
+        background: url('img/verified.svg');
+        width: 2.5vh;
+        height: 2.5vh;
+        background-size: cover;
+        margin-left: 1%;
+      }
+
+      .text.page .nameBlock {
+        width: 70%;
+      }
+      .text.page .nameBlock .line1 {
+        display: flex;
+      }
+
+      .media.page .verified.true, .image.page .verified.true, .video.page .verified.true {
+        background: url('img/verified.svg');
+        background-size: cover;
+        width: 2.5vh;
+        height: 2.5vh;
+        margin-left: 1%;
+      }
+
+      .engagementOverlay {
+        position: absolute;
+        bottom: 0;
+        display: flex;
+      }
+
+      .engagementOverlay .favoriteBox {
+width:500px;
+height:500px;
+border-radius:50%;
+font-size:50px;
+color:#fff;
+line-height:500px;
+text-align:center;
+background:darkgrey;
+
+ 
+        width: 9vh;
+        height: 9vh;
+
+}
+
+
+      .engagementOverlay .favoriteIcon {
+        background: url('img/like.svg');
+        color:white;
+        fill: currentColor;
+        background-size: cover;
+        width: 9vh;
+        height: 9vh;
+      }
+      svg {
+        fill: currentColor;
+      }
+      svg path {
+          fill: #ff0000;
+
       }
 
     </style>
