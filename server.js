@@ -28,6 +28,35 @@ router.get('/', function(req, res) {
   res.json({ message: 'hooray! welcome to our api!' });
 });
 
+function fetchCapsule(id, res) {
+  client.get('moments/capsule/' + id, params, function(error, capsule, response) {
+    var pageTweetIds = _.map(capsule['pages'], function(p) { return p['tweet_id']});
+    var hydratedTweetIds = Object.keys(capsule['tweets'])
+    console.log('hydratedTweetIds ' + hydratedTweetIds)
+    console.log('pageTweetIds ' + pageTweetIds)
+    var needHydrationIds = _.difference(pageTweetIds, hydratedTweetIds)
+    console.log('needHydrationIds ' + needHydrationIds)
+
+    if (needHydrationIds.length > 0) {
+      var lookupParams = {
+        id: needHydrationIds.join(','),
+        include_cards: 1,
+        cards_platform: 'iPhone-12',
+      }
+      console.log(lookupParams)
+
+      client.get('statuses/lookup', lookupParams, function(error, tweets, response) {
+        _.each(tweets, function(tweet) {
+          capsule['tweets'][tweet['id_str']] = tweet;
+        });
+        res.json(capsule)
+      })
+    } else {
+      res.json(capsule)
+    }
+  });
+}
+
 router.get('/capsule/random', function(req, res) {
   client.get('moments/guide', params, function(error, guide, response) {
     // console.log(guide['modules'])
@@ -38,36 +67,13 @@ router.get('/capsule/random', function(req, res) {
     // console.log(ids)
     var id = _.sample(ids)
     // id = '761195021462806529'
-
-    client.get('moments/capsule/' + id, params, function(error, capsule, response) {
-      var pageTweetIds = _.map(capsule['pages'], function(p) { return p['tweet_id']});
-      var hydratedTweetIds = Object.keys(capsule['tweets'])
-      var needHydrationIds = _.difference(pageTweetIds, hydratedTweetIds)
-      if (needHydrationIds.length > 0) {
-        var lookupParams = {
-          id: needHydrationIds.join(','),
-          include_cards: 1,
-          cards_platform: 'iPhone-12',
-        }
-        console.log(lookupParams)
-
-        client.get('statuses/lookup', lookupParams, function(error, tweets, response) {
-          _.each(tweets, function(tweet) {
-            capsule['tweets'][tweet['id_str']] = tweet;
-          });
-          res.json(capsule)
-        })
-      } else {
-        res.json(capsule)
-      }
-    });
+    fetchCapsule(id, res);
   });
 });
 
 router.get('/capsule/:id', function(req, res) {
-  client.get('moments/capsule/' + req.params.id, params, function(error, capsule, response) {
-    res.json(capsule)
-  });
+  var id = req.params.id;
+  fetchCapsule(id, res);
 });
 
 router.get('/guide', function(req, res) {

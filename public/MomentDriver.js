@@ -29,7 +29,7 @@ var MomentRenderer = React.createClass({
     var isCover = this.props['isCover']
 
     return (
-      <div className="image page">
+      <div className="image media page">
         <div className="bgImage" style={divStyle}>
         </div>
         {this.buildTextOverlay(page, isCover)}
@@ -43,7 +43,7 @@ var MomentRenderer = React.createClass({
     console.log(page['render'])
 
     return (
-      <div className="video page bgVideo">
+      <div className="video media page bgVideo">
         <div className="video_contain">
           <video id="video-background" preload="true" autoPlay="true" muted="true" loop="true">
             <source src={media} type="video/mp4"/>
@@ -64,7 +64,7 @@ var MomentRenderer = React.createClass({
 
     return (        
       <div className="coverTextOverlay">
-        <div className="textModule">
+        <div className="coverTextModule">
           <div className="timeString">{time_string}</div>
           <div className="title">{title}</div>
           <div className="descriptionBlock">
@@ -79,22 +79,32 @@ var MomentRenderer = React.createClass({
     )
   },
 
+  formatCount: function(n) {
+    if (n > 10000) {
+      return n / 1000 + 'K'
+    } else {
+      return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+  },
+
   buildEngagementOverlay: function(page) {
     var tweet = this.props.tweets[page['tweet_id']]
-    var favorite_count = tweet['favorite_count']
-    var retweet_count = tweet['retweet_count']
+    var favorite_count = this.formatCount(tweet['favorite_count'])
+    var retweet_count = this.formatCount(tweet['retweet_count'])
 
     return (        
       <div className="engagementOverlay">
-        <div>
+        <div className="iconTextBox">
           <div className="favoriteBox">
             <div className="favoriteIcon"></div>
           </div>
-          <div>{favorite_count}</div>
+          <div className="count">{favorite_count}</div>
         </div>
-        <div>
-          <div className="retweet_icon"></div>
-          <div>{retweet_count}</div>
+        <div className="iconTextBox">
+          <div className="retweetBox">
+            <div className="retweetIcon"></div>
+          </div>
+          <div className="count">{retweet_count}</div>
         </div>
       </div>
     )
@@ -109,7 +119,9 @@ var MomentRenderer = React.createClass({
 
     var verifiedClassNames = 'verified ' + verified
 
-    return (        <div className="textOverlay">
+    return (        
+      <div className="overlay">
+        <div className="textOverlay">
           <div className="textModule">
             <div className="topModule">
               <div className="nameBlock">
@@ -120,7 +132,10 @@ var MomentRenderer = React.createClass({
             </div>
             <div className="text">{tweet.text}</div>
           </div>
-        </div>)
+        </div>
+        {this.buildEngagementOverlay(page)}
+      </div>
+    );
   },
 
   buildTextOverlay: function(page, isCover) {
@@ -239,7 +254,7 @@ var MomentDriver = React.createClass({
       var currentPage = this.state.currentMoment['pages'][page];
       var isCover = page == -1;
       if (isCover) {
-        currentPage = result['cover_format']
+        currentPage = this.state.currentMoment['cover_format']
       }
       this.setState({
         currentMoment: this.state.currentMoment,
@@ -263,7 +278,7 @@ var MomentDriver = React.createClass({
 
   render: function() {
     return (
-      <MomentRenderer moment={this.state.currentMoment['moment']} users={this.state.currentMoment['users']}  tweets={this.state.currentMoment['tweets']} page={this.state.currentPage} isCover={this.state.isCover}/>
+      <MomentRenderer moment={this.state.currentMoment['moment']}  tweets={this.state.currentMoment['tweets']} page={this.state.currentPage} isCover={this.state.isCover}/>
     );
   }
 });

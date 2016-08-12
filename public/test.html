@@ -183,11 +183,15 @@ body {
 
       }
 
-      .image.page .textModule, .video.page .textModule {
+      .media.page .textModule {
         padding: 4%;
         font-size: 2.5vh;
+        padding-bottom: 14%;
       }
 
+      .coverTextModule {
+        padding: 4%;
+      }
 
       .image.page .nameBlock, .video.page .nameBlock {
         display: flex;
@@ -232,7 +236,19 @@ body {
         display: flex;
       }
 
-      .engagementOverlay .favoriteBox {
+      .engagementOverlay {
+        color: darkgrey;
+        margin: 4%;
+      }
+
+      .engagementOverlay .iconTextBox {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 20%;
+      }
+
+      .engagementOverlay .favoriteBox, .engagementOverlay .retweetBox {
 width:500px;
 height:500px;
 border-radius:50%;
@@ -242,27 +258,36 @@ line-height:500px;
 text-align:center;
 background:darkgrey;
 
- 
-        width: 9vh;
-        height: 9vh;
+        width: 4vh;
+        height: 4vh;
 
+display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-
       .engagementOverlay .favoriteIcon {
-        background: url('img/like.svg');
+        background: url('img/like.svg')  no-repeat center center; 
         color:white;
         fill: currentColor;
         background-size: cover;
-        width: 9vh;
-        height: 9vh;
+        width: 3vh;
+        height: 3vh;
+        opacity: 1.0;
       }
-      svg {
-        fill: currentColor;
-      }
-      svg path {
-          fill: #ff0000;
 
+      .engagementOverlay .retweetIcon {
+        background: url('img/retweet.svg')  no-repeat center center; 
+        color:white;
+        fill: currentColor;
+        background-size: cover;
+        width: 3vh;
+        height: 3vh;
+        opacity: 1.0;
+      }
+
+      .engagementOverlay .count {
+        padding-left: 10%;
       }
 
     </style>
