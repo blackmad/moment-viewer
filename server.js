@@ -24,9 +24,9 @@ client = new Twitter(_.extend(secrets, {
    max_count: 1000
  };
 
-router.get('/', function(req, res) {
-  res.json({ message: 'hooray! welcome to our api!' });
-});
+ app.get('/', function(req, res) {
+   res.redirect('/index.html')
+ });
 
 function fetchCapsule(id, res) {
   client.get('moments/capsule/' + id, params, function(error, capsule, response) {
